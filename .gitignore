@@ -1,0 +1,52 @@
+# === Go build artifacts ===
+bin/
+build/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# === Go workspace ===
+*.log
+*.cache
+*.tmp
+*.local
+coverage.out
+
+# === Dependency management ===
+vendor/
+go.sum
+
+# === IDEs and editors ===
+# JetBrains (GoLand, IntelliJ)
+.idea/
+
+# VS Code
+.vscode/
+.history/
+*.code-workspace
+
+# === OS-specific files ===
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# Linux
+*~
+
+# === Environment / secrets ===
+.env
+.env.*
+*.key
+*.pem
+
+# === Misc ===
+# compiled binaries or temp output
+*.bak
+*.swp
