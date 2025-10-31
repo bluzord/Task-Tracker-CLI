@@ -39,6 +39,10 @@ func NewTask(id int, description string) (*Task, error) {
 		return nil, fmt.Errorf("task: description is required")
 	}
 
+	if len(description) > 50 {
+		return nil, fmt.Errorf("task: description is too long (must be less or equal to 50)")
+	}
+
 	return &Task{
 		ID:          id,
 		Description: description,

@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"sort"
 	"strings"
 	"task-tracker/task"
 )
@@ -31,7 +32,7 @@ type Store interface {
 	LastID() int
 
 	// ListAllTasks returns all tasks stored in the system.
-	ListAllTasks() ([]*task.Task, error)
+	ListAllTasks() []task.Task
 
 	// ListTasksByStatus returns all tasks filtered by the given status (todo, in-progress, done).
 	ListTasksByStatus(status task.Status) ([]*task.Task, error)
@@ -47,6 +48,12 @@ type Store interface {
 type JSONStore struct {
 	path  string
 	tasks []task.Task
+}
+
+var statusOrder = map[task.Status]int{
+	task.StatusTodo:       1,
+	task.StatusInProgress: 2,
+	task.StatusDone:       3,
 }
 
 func (j *JSONStore) AddTask(description string) (int, error) {
@@ -97,9 +104,18 @@ func (j *JSONStore) LastID() int {
 	return maxID
 }
 
-func (j *JSONStore) ListAllTasks() ([]*task.Task, error) {
-	//TODO implement me
-	panic("implement me")
+func (j *JSONStore) ListAllTasks() []task.Task {
+	sort.Slice(j.tasks, func(i, k int) bool {
+		si := statusOrder[j.tasks[i].Status]
+		sk := statusOrder[j.tasks[k].Status]
+
+		if si != sk {
+			return si < sk
+		}
+
+		return j.tasks[i].UpdatedAt.After(j.tasks[k].UpdatedAt)
+	})
+	return j.tasks
 }
 
 func (j *JSONStore) ListTasksByStatus(status task.Status) ([]*task.Task, error) {

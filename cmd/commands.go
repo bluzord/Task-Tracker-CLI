@@ -32,6 +32,44 @@ func printUsage() {
   task-cli mark-done [id]                 Mark task as done`)
 }
 
+func printTasks(tasks []task.Task) {
+	if len(tasks) == 0 {
+		color.Yellow("No tasks found")
+		return
+	}
+
+	for _, t := range tasks {
+
+		var statusString, labelString, dateString string
+
+		switch t.Status {
+		case task.StatusDone:
+			statusString = color.GreenString("(%s)", t.Status)
+		case task.StatusTodo:
+			statusString = color.YellowString("(%s)", t.Status)
+		case task.StatusInProgress:
+			statusString = color.CyanString("(%s)", t.Status)
+		}
+
+		if t.UpdatedAt.After(t.CreatedAt) {
+			labelString = color.HiBlackString("| updated")
+			dateString = color.HiBlackString(t.UpdatedAt.Format("2006-01-02 15:04:05"))
+		} else {
+			labelString = color.HiBlackString("| created")
+			dateString = color.HiBlackString(t.CreatedAt.Format("2006-01-02 15:04:05"))
+		}
+
+		fmt.Printf(
+			"%-17s %-25s %-50s %s %s\n",
+			color.HiMagentaString("[%d]", t.ID),
+			statusString,
+			t.Description,
+			labelString,
+			dateString,
+		)
+	}
+}
+
 func HandleCommand(args []string, s store.Store) error {
 
 	if len(args) < 2 {
@@ -115,7 +153,7 @@ func handleDelete(args []string, s store.Store) {
 
 func handleList(args []string, s store.Store) {
 	if len(args) == 1 {
-		fmt.Println("List all tasks")
+		printTasks(s.ListAllTasks())
 		return
 	}
 	if len(args) == 2 {
