@@ -93,8 +93,11 @@ func (j *JSONStore) loadTasks() error {
 }
 
 func (j *JSONStore) saveTasks() error {
-	//TODO implement me
-	panic("implement me")
+	arr, err := json.Marshal(j.tasks)
+	if err != nil {
+		return err
+	}
+	return os.WriteFile(j.path, arr, 0644)
 }
 
 func NewJSONStore(path string) (*JSONStore, error) {

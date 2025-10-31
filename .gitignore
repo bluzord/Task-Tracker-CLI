@@ -50,3 +50,5 @@ Desktop.ini
 # compiled binaries or temp output
 *.bak
 *.swp
+
+tasks.json
