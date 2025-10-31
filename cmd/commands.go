@@ -18,7 +18,7 @@ const (
 	CommandMarkDone       Command = "mark-done"
 )
 
-func PrintUsage() {
+func printUsage() {
 	fmt.Println(`Usage:
   task-cli add [description]              Add a new task
   task-cli update [id] [description]      Update a task
@@ -29,36 +29,43 @@ func PrintUsage() {
   task-cli mark-done [id]                 Mark task as done`)
 }
 
-func HandleCommand(args []string) {
-	switch Command(args[0]) {
-	case CommandAdd:
-		handleAdd(args)
-	case CommandUpdate:
-		handleUpdate(args)
-	case CommandDelete:
-		handleDelete(args)
-	case CommandList:
-		handleList(args)
-	case CommandMarkInProgress:
-		handleMarkInProgress(args)
-	case CommandMarkDone:
-		handleMarkDone(args)
-	default:
-		PrintUsage()
+func HandleCommand(args []string) error {
+
+	if len(args) < 2 {
+		printUsage()
+		return fmt.Errorf("cmd: invalid number of arguments")
 	}
+
+	switch Command(args[1]) {
+	case CommandAdd:
+		handleAdd(args[1:])
+	case CommandUpdate:
+		handleUpdate(args[1:])
+	case CommandDelete:
+		handleDelete(args[1:])
+	case CommandList:
+		handleList(args[1:])
+	case CommandMarkInProgress:
+		handleMarkInProgress(args[1:])
+	case CommandMarkDone:
+		handleMarkDone(args[1:])
+	default:
+		printUsage()
+	}
+	return nil
 }
 
 func parseID(arg string) (int, error) {
 	id, err := strconv.Atoi(arg)
 	if err != nil {
-		return 0, fmt.Errorf("invalid ID: %s (must be integer)", arg)
+		return 0, fmt.Errorf("cmd: invalid ID: %s (must be integer)", arg)
 	}
 	return id, nil
 }
 
 func handleAdd(args []string) {
 	if len(args) < 2 {
-		PrintUsage()
+		printUsage()
 		return
 	}
 
@@ -68,7 +75,7 @@ func handleAdd(args []string) {
 
 func handleUpdate(args []string) {
 	if len(args) < 3 {
-		PrintUsage()
+		printUsage()
 		return
 	}
 
@@ -85,7 +92,7 @@ func handleUpdate(args []string) {
 
 func handleDelete(args []string) {
 	if len(args) != 2 {
-		PrintUsage()
+		printUsage()
 		return
 	}
 
@@ -112,16 +119,16 @@ func handleList(args []string) {
 		case task.StatusTodo:
 			fmt.Println("List todo tasks")
 		default:
-			PrintUsage()
+			printUsage()
 		}
 		return
 	}
-	PrintUsage()
+	printUsage()
 }
 
 func handleMarkInProgress(args []string) {
 	if len(args) != 2 {
-		PrintUsage()
+		printUsage()
 		return
 	}
 
@@ -136,7 +143,7 @@ func handleMarkInProgress(args []string) {
 
 func handleMarkDone(args []string) {
 	if len(args) != 2 {
-		PrintUsage()
+		printUsage()
 		return
 	}
 

@@ -6,10 +6,8 @@ import (
 )
 
 func main() {
-	if len(os.Args) < 2 {
-		cmd.PrintUsage()
+	err := cmd.HandleCommand(os.Args)
+	if err != nil {
 		return
 	}
-
-	cmd.HandleCommand(os.Args[1:])
 }
