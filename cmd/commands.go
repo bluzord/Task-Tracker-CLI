@@ -159,11 +159,11 @@ func handleList(args []string, s store.Store) {
 	if len(args) == 2 {
 		switch task.Status(args[1]) {
 		case task.StatusDone:
-			fmt.Println("List done tasks")
+			printTasks(s.ListTasksByStatus(task.StatusDone))
 		case task.StatusInProgress:
-			fmt.Println("List in-progress tasks")
+			printTasks(s.ListTasksByStatus(task.StatusInProgress))
 		case task.StatusTodo:
-			fmt.Println("List todo tasks")
+			printTasks(s.ListTasksByStatus(task.StatusTodo))
 		default:
 			printUsage()
 		}

@@ -35,7 +35,7 @@ type Store interface {
 	ListAllTasks() []task.Task
 
 	// ListTasksByStatus returns all tasks filtered by the given status (todo, in-progress, done).
-	ListTasksByStatus(status task.Status) ([]*task.Task, error)
+	ListTasksByStatus(status task.Status) []task.Task
 
 	// loadTasks reads tasks from the underlying storage (e.g., JSON file)
 	// and loads them into memory.
@@ -118,9 +118,17 @@ func (j *JSONStore) ListAllTasks() []task.Task {
 	return j.tasks
 }
 
-func (j *JSONStore) ListTasksByStatus(status task.Status) ([]*task.Task, error) {
-	//TODO implement me
-	panic("implement me")
+func (j *JSONStore) ListTasksByStatus(status task.Status) []task.Task {
+	result := make([]task.Task, 0)
+	for _, t := range j.tasks {
+		if t.Status == status {
+			result = append(result, t)
+		}
+	}
+	sort.Slice(result, func(i, k int) bool {
+		return j.tasks[i].UpdatedAt.After(j.tasks[k].UpdatedAt)
+	})
+	return result
 }
 
 func (j *JSONStore) loadTasks() error {
