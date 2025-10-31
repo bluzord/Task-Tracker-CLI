@@ -69,8 +69,17 @@ func (j *JSONStore) DeleteTask(id int) (*task.Task, error) {
 }
 
 func (j *JSONStore) LastID() (int, error) {
-	//TODO implement me
-	panic("implement me")
+	if len(j.tasks) == 0 {
+		return -1, fmt.Errorf("store: no tasks found")
+	}
+
+	maxID := j.tasks[0].ID
+	for _, t := range j.tasks {
+		if t.ID > maxID {
+			maxID = t.ID
+		}
+	}
+	return maxID, nil
 }
 
 func (j *JSONStore) ListAllTasks() ([]*task.Task, error) {
