@@ -98,14 +98,26 @@ func (j *JSONStore) loadTasks() error {
 		return fmt.Errorf("store: failed to read tasks: %w", err)
 	}
 
-	//TODO: проверять корректность ID во всех тасках (должны быть больше нуля)
-	return json.Unmarshal(data, &j.tasks)
+	err = json.Unmarshal(data, &j.tasks)
+	if err != nil {
+		return fmt.Errorf("store: failed to unmarshal tasks: %w", err)
+	}
+
+	for _, t := range j.tasks {
+		if t.ID < 1 {
+			return fmt.Errorf("store: invalid task ID: %d", t.ID)
+		}
+		if !t.Status.IsValid() {
+			return fmt.Errorf("store: invalid task status: %s", t.Status)
+		}
+	}
+	return nil
 }
 
 func (j *JSONStore) saveTasks() error {
 	arr, err := json.Marshal(j.tasks)
 	if err != nil {
-		return fmt.Errorf("store: failed to save tasks: %w", err)
+		return fmt.Errorf("store: failed to marshal tasks: %w", err)
 	}
 	return os.WriteFile(j.path, arr, 0644)
 }

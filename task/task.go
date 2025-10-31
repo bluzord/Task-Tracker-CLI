@@ -13,7 +13,7 @@ const (
 	StatusDone       Status = "done"
 )
 
-func (s Status) isValid() bool {
+func (s Status) IsValid() bool {
 	switch s {
 	case StatusTodo, StatusInProgress, StatusDone:
 		return true
