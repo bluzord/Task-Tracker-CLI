@@ -22,11 +22,11 @@ func (s Status) isValid() bool {
 }
 
 type Task struct {
-	id          int
-	description string
-	status      Status
-	createdAt   time.Time
-	updatedAt   time.Time
+	ID          int       `json:"id"`
+	Description string    `json:"description"`
+	Status      Status    `json:"status"`
+	CreatedAt   time.Time `json:"created_at"`
+	UpdatedAt   time.Time `json:"updated_at"`
 }
 
 func NewTask(id int, description string) (*Task, error) {
@@ -36,26 +36,10 @@ func NewTask(id int, description string) (*Task, error) {
 	}
 
 	return &Task{
-		id:          id,
-		description: description,
-		status:      StatusTodo,
-		createdAt:   time.Now(),
-		updatedAt:   time.Now(),
+		ID:          id,
+		Description: description,
+		Status:      StatusTodo,
+		CreatedAt:   time.Now(),
+		UpdatedAt:   time.Now(),
 	}, nil
-}
-
-func (t *Task) Status() Status {
-	return t.status
-}
-
-func (t *Task) Description() string {
-	return t.description
-}
-
-func (t *Task) CreatedAt() time.Time {
-	return t.createdAt
-}
-
-func (t *Task) UpdatedAt() time.Time {
-	return t.updatedAt
 }

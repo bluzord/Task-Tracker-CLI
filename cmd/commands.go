@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
+	"task-tracker/store"
 	"task-tracker/task"
 )
 
@@ -29,7 +30,7 @@ func printUsage() {
   task-cli mark-done [id]                 Mark task as done`)
 }
 
-func HandleCommand(args []string) error {
+func HandleCommand(args []string, s store.Store) error {
 
 	if len(args) < 2 {
 		printUsage()
@@ -38,17 +39,17 @@ func HandleCommand(args []string) error {
 
 	switch Command(args[1]) {
 	case CommandAdd:
-		handleAdd(args[1:])
+		handleAdd(args[1:], s)
 	case CommandUpdate:
-		handleUpdate(args[1:])
+		handleUpdate(args[1:], s)
 	case CommandDelete:
-		handleDelete(args[1:])
+		handleDelete(args[1:], s)
 	case CommandList:
-		handleList(args[1:])
+		handleList(args[1:], s)
 	case CommandMarkInProgress:
-		handleMarkInProgress(args[1:])
+		handleMarkInProgress(args[1:], s)
 	case CommandMarkDone:
-		handleMarkDone(args[1:])
+		handleMarkDone(args[1:], s)
 	default:
 		printUsage()
 	}
@@ -63,7 +64,7 @@ func parseID(arg string) (int, error) {
 	return id, nil
 }
 
-func handleAdd(args []string) {
+func handleAdd(args []string, s store.Store) {
 	if len(args) < 2 {
 		printUsage()
 		return
@@ -73,7 +74,7 @@ func handleAdd(args []string) {
 	fmt.Println("Add description:", description)
 }
 
-func handleUpdate(args []string) {
+func handleUpdate(args []string, s store.Store) {
 	if len(args) < 3 {
 		printUsage()
 		return
@@ -90,7 +91,7 @@ func handleUpdate(args []string) {
 	fmt.Printf("Update %d description: %s\n", id, description)
 }
 
-func handleDelete(args []string) {
+func handleDelete(args []string, s store.Store) {
 	if len(args) != 2 {
 		printUsage()
 		return
@@ -105,7 +106,7 @@ func handleDelete(args []string) {
 	fmt.Println("Deleted id:", id)
 }
 
-func handleList(args []string) {
+func handleList(args []string, s store.Store) {
 	if len(args) == 1 {
 		fmt.Println("List all tasks")
 		return
@@ -126,7 +127,7 @@ func handleList(args []string) {
 	printUsage()
 }
 
-func handleMarkInProgress(args []string) {
+func handleMarkInProgress(args []string, s store.Store) {
 	if len(args) != 2 {
 		printUsage()
 		return
@@ -141,7 +142,7 @@ func handleMarkInProgress(args []string) {
 	fmt.Println("Mark In Progress task", id)
 }
 
-func handleMarkDone(args []string) {
+func handleMarkDone(args []string, s store.Store) {
 	if len(args) != 2 {
 		printUsage()
 		return
