@@ -71,7 +71,12 @@ func handleAdd(args []string, s store.Store) {
 	}
 
 	description := strings.Join(args[1:], " ")
-	fmt.Println("Add description:", description)
+	id, err := s.AddTask(description)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	fmt.Printf("Task added: [%d] %s\n", id, description)
 }
 
 func handleUpdate(args []string, s store.Store) {

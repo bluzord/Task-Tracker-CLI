@@ -11,7 +11,8 @@ import (
 
 type Store interface {
 	// AddTask adds a new task with the given description and saves changes to storage.
-	AddTask(description string) error
+	// Returns an ID of a new task.
+	AddTask(description string) (int, error)
 
 	// GetTask returns a task by its ID.
 	// Returns an error if the task does not exist.
@@ -48,9 +49,26 @@ type JSONStore struct {
 	tasks []task.Task
 }
 
-func (j *JSONStore) AddTask(description string) error {
-	//TODO implement me
-	panic("implement me")
+func (j *JSONStore) AddTask(description string) (int, error) {
+	id, err := j.LastID()
+	id++
+	if err != nil {
+		return -1, err
+	}
+
+	t, err := task.NewTask(id, description)
+	if err != nil {
+		return -1, err
+	}
+
+	j.tasks = append(j.tasks, *t)
+
+	err = j.saveTasks()
+	if err != nil {
+		return -1, err
+	}
+
+	return id, nil
 }
 
 func (j *JSONStore) GetTask(id int) (*task.Task, error) {
