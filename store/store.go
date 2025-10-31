@@ -28,7 +28,7 @@ type Store interface {
 
 	// LastID returns the highest task ID in the storage.
 	// Used to generate new unique IDs.
-	LastID() (int, error)
+	LastID() int
 
 	// ListAllTasks returns all tasks stored in the system.
 	ListAllTasks() ([]*task.Task, error)
@@ -50,11 +50,7 @@ type JSONStore struct {
 }
 
 func (j *JSONStore) AddTask(description string) (int, error) {
-	id, err := j.LastID()
-	id++
-	if err != nil {
-		return -1, err
-	}
+	id := j.LastID() + 1
 
 	t, err := task.NewTask(id, description)
 	if err != nil {
@@ -86,9 +82,10 @@ func (j *JSONStore) DeleteTask(id int) (*task.Task, error) {
 	panic("implement me")
 }
 
-func (j *JSONStore) LastID() (int, error) {
+func (j *JSONStore) LastID() int {
+
 	if len(j.tasks) == 0 {
-		return -1, fmt.Errorf("store: no tasks found")
+		return 0
 	}
 
 	maxID := j.tasks[0].ID
@@ -97,7 +94,7 @@ func (j *JSONStore) LastID() (int, error) {
 			maxID = t.ID
 		}
 	}
-	return maxID, nil
+	return maxID
 }
 
 func (j *JSONStore) ListAllTasks() ([]*task.Task, error) {
