@@ -116,7 +116,7 @@ func handleAdd(args []string, s store.Store) {
 		color.Red(err.Error())
 		return
 	}
-	fmt.Printf("%s [%d] %s\n", color.GreenString("Task added:"), id, description)
+	fmt.Printf("%s %s %s\n", color.GreenString("Task added:"), color.HiMagentaString("[%d]", id), description)
 }
 
 func handleUpdate(args []string, s store.Store) {

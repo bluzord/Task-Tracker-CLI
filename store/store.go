@@ -135,11 +135,8 @@ func (j *JSONStore) loadTasks() error {
 	}
 
 	for _, t := range j.tasks {
-		if t.ID < 1 {
-			return fmt.Errorf("store: invalid task ID: %d", t.ID)
-		}
-		if !t.Status.IsValid() {
-			return fmt.Errorf("store: invalid task status: %s", t.Status)
+		if err := task.ValidateTask(&t); err != nil {
+			return fmt.Errorf("store: failed to validate task [%d]: %v", t.ID, err)
 		}
 	}
 	return nil

@@ -3,6 +3,8 @@ package task
 import (
 	"fmt"
 	"time"
+
+	"github.com/go-playground/validator/v10"
 )
 
 type Status string
@@ -22,32 +24,32 @@ func (s Status) IsValid() bool {
 }
 
 type Task struct {
-	ID          int       `json:"id"`
-	Description string    `json:"description"`
-	Status      Status    `json:"status"`
-	CreatedAt   time.Time `json:"created_at"`
-	UpdatedAt   time.Time `json:"updated_at"`
+	ID          int       `json:"id" validate:"required,min=1,max=999999"`
+	Description string    `json:"description" validate:"required,min=1,max=50"`
+	Status      Status    `json:"status" validate:"required"`
+	CreatedAt   time.Time `json:"created_at" validate:"required"`
+	UpdatedAt   time.Time `json:"updated_at" validate:"required"`
+}
+
+var validate = validator.New()
+
+func ValidateTask(t *Task) error {
+	return validate.Struct(t)
 }
 
 func NewTask(id int, description string) (*Task, error) {
 
-	if id < 1 {
-		return nil, fmt.Errorf("task: invalid id (must be greater than 0)")
-	}
-
-	if description == "" {
-		return nil, fmt.Errorf("task: description is required")
-	}
-
-	if len(description) > 50 {
-		return nil, fmt.Errorf("task: description is too long (must be less or equal to 50)")
-	}
-
-	return &Task{
+	t := &Task{
 		ID:          id,
 		Description: description,
 		Status:      StatusTodo,
 		CreatedAt:   time.Now(),
 		UpdatedAt:   time.Now(),
-	}, nil
+	}
+
+	if err := ValidateTask(t); err != nil {
+		return nil, fmt.Errorf("NewTask: invalid task: %w", err)
+	}
+
+	return t, nil
 }
