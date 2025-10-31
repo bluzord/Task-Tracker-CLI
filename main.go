@@ -9,7 +9,7 @@ import (
 
 func main() {
 
-	s, err := store.NewJSONStore("db.json")
+	s, err := store.NewJSONStore("tasks.json")
 	if err != nil {
 		fmt.Println(err)
 		return
