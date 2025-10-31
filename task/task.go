@@ -1,7 +1,7 @@
 package task
 
 import (
-	"errors"
+	"fmt"
 	"time"
 )
 
@@ -32,11 +32,11 @@ type Task struct {
 func NewTask(id int, description string) (*Task, error) {
 
 	if id < 1 {
-		return nil, errors.New("task: invalid id (must be greater than 0)")
+		return nil, fmt.Errorf("task: invalid id (must be greater than 0)")
 	}
 
 	if description == "" {
-		return nil, errors.New("task: description is required")
+		return nil, fmt.Errorf("task: description is required")
 	}
 
 	return &Task{

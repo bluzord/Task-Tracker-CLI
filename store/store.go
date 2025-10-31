@@ -95,16 +95,17 @@ func (j *JSONStore) ListTasksByStatus(status task.Status) ([]*task.Task, error) 
 func (j *JSONStore) loadTasks() error {
 	data, err := os.ReadFile(j.path)
 	if err != nil {
-		return err
+		return fmt.Errorf("store: failed to read tasks: %w", err)
 	}
 
+	//TODO: проверять корректность ID во всех тасках (должны быть больше нуля)
 	return json.Unmarshal(data, &j.tasks)
 }
 
 func (j *JSONStore) saveTasks() error {
 	arr, err := json.Marshal(j.tasks)
 	if err != nil {
-		return err
+		return fmt.Errorf("store: failed to save tasks: %w", err)
 	}
 	return os.WriteFile(j.path, arr, 0644)
 }
@@ -118,7 +119,7 @@ func NewJSONStore(path string) (*JSONStore, error) {
 	if _, err := os.Stat(path); errors.Is(err, os.ErrNotExist) {
 		err := os.WriteFile(path, []byte("[]"), 0644)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("store: failed to save tasks: %w", err)
 		}
 	}
 
