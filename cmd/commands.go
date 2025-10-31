@@ -6,6 +6,8 @@ import (
 	"strings"
 	"task-tracker/store"
 	"task-tracker/task"
+
+	"github.com/fatih/color"
 )
 
 type Command string
@@ -73,10 +75,10 @@ func handleAdd(args []string, s store.Store) {
 	description := strings.Join(args[1:], " ")
 	id, err := s.AddTask(description)
 	if err != nil {
-		fmt.Println(err)
+		color.Red(err.Error())
 		return
 	}
-	fmt.Printf("Task added: [%d] %s\n", id, description)
+	fmt.Printf("%s [%d] %s\n", color.GreenString("Task added:"), id, description)
 }
 
 func handleUpdate(args []string, s store.Store) {
