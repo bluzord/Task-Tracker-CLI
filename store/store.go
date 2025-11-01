@@ -182,7 +182,7 @@ func (j *JSONStore) ListTasksByStatus(status task.Status) []task.Task {
 		}
 	}
 	sort.Slice(result, func(i, k int) bool {
-		return j.tasks[i].UpdatedAt.After(j.tasks[k].UpdatedAt)
+		return result[i].UpdatedAt.After(result[k].UpdatedAt)
 	})
 	return result
 }

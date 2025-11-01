@@ -189,10 +189,6 @@ func handleList(args []string, s store.Store) {
 		case task.StatusInProgress:
 			printTasks(s.ListTasksByStatus(task.StatusInProgress))
 		case task.StatusTodo:
-			temp := s.ListTasksByStatus(task.StatusTodo)
-			for _, t := range temp {
-				fmt.Println(t)
-			}
 			printTasks(s.ListTasksByStatus(task.StatusTodo))
 		default:
 			printUsage()
