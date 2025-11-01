@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
-	"task-tracker/store"
-	"task-tracker/task"
+	"tracker/store"
+	"tracker/task"
 
 	"github.com/fatih/color"
 )
@@ -127,7 +127,7 @@ func handleUpdate(args []string, s store.Store) {
 
 	id, err := parseID(args[1])
 	if err != nil {
-		fmt.Println(err)
+		color.Red(err.Error())
 		return
 	}
 
@@ -144,11 +144,21 @@ func handleDelete(args []string, s store.Store) {
 
 	id, err := parseID(args[1])
 	if err != nil {
-		fmt.Println(err)
+		color.Red(err.Error())
 		return
 	}
 
-	fmt.Println("Deleted id:", id)
+	t, err := s.DeleteTask(id)
+	if err != nil {
+		color.Red(err.Error())
+		return
+	}
+	fmt.Printf(
+		"%s %s %s\n",
+		color.GreenString("Task deleted:"),
+		color.HiMagentaString("[%d]", t.ID),
+		t.Description,
+	)
 }
 
 func handleList(args []string, s store.Store) {
@@ -180,7 +190,7 @@ func handleMarkInProgress(args []string, s store.Store) {
 
 	id, err := parseID(args[1])
 	if err != nil {
-		fmt.Println(err)
+		color.Red(err.Error())
 		return
 	}
 
@@ -195,7 +205,7 @@ func handleMarkDone(args []string, s store.Store) {
 
 	id, err := parseID(args[1])
 	if err != nil {
-		fmt.Println(err)
+		color.Red(err.Error())
 		return
 	}
 

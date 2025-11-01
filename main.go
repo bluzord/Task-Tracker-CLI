@@ -2,8 +2,8 @@ package main
 
 import (
 	"os"
-	"task-tracker/cmd"
-	"task-tracker/store"
+	"tracker/cmd"
+	"tracker/store"
 
 	"github.com/fatih/color"
 )

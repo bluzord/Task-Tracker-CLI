@@ -1,4 +1,4 @@
-module task-tracker
+module tracker
 
 go 1.25.1
 

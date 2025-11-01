@@ -7,17 +7,13 @@ import (
 	"os"
 	"sort"
 	"strings"
-	"task-tracker/task"
+	"tracker/task"
 )
 
 type Store interface {
 	// AddTask adds a new task with the given description and saves changes to storage.
 	// Returns an ID of a new task.
 	AddTask(description string) (int, error)
-
-	// GetTask returns a task by its ID.
-	// Returns an error if the task does not exist.
-	GetTask(id int) (*task.Task, error)
 
 	// UpdateTask updates the description of the task with the given ID
 	// and saves the updated data to storage.
@@ -74,19 +70,33 @@ func (j *JSONStore) AddTask(description string) (int, error) {
 	return id, nil
 }
 
-func (j *JSONStore) GetTask(id int) (*task.Task, error) {
-	//TODO implement me
-	panic("implement me")
-}
-
 func (j *JSONStore) UpdateTask(id int, description string) error {
 	//TODO implement me
 	panic("implement me")
 }
 
 func (j *JSONStore) DeleteTask(id int) (*task.Task, error) {
-	//TODO implement me
-	panic("implement me")
+	idx := -1
+
+	for i, t := range j.tasks {
+		if t.ID == id {
+			idx = i
+			break
+		}
+	}
+
+	if idx == -1 {
+		return nil, fmt.Errorf("store: task [%d] not found", id)
+	}
+
+	t := j.tasks[idx]
+	j.tasks = append(j.tasks[:idx], j.tasks[idx+1:]...)
+
+	err := j.saveTasks()
+	if err != nil {
+		return nil, err
+	}
+	return &t, nil
 }
 
 func (j *JSONStore) LastID() int {
