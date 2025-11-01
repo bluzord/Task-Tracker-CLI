@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
-	"tracker/store"
-	"tracker/task"
+	"task-cli/store"
+	"task-cli/task"
 
 	"github.com/fatih/color"
 )

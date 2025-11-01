@@ -52,4 +52,5 @@ Desktop.ini
 *.swp
 
 tasks.json
-tracker
+task-cli
+task-cli.exe
