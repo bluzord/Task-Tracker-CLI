@@ -39,12 +39,14 @@ func ValidateTask(t *Task) error {
 
 func NewTask(id int, description string) (*Task, error) {
 
+	creationTime := time.Now()
+
 	t := &Task{
 		ID:          id,
 		Description: description,
 		Status:      StatusTodo,
-		CreatedAt:   time.Now(),
-		UpdatedAt:   time.Now(),
+		CreatedAt:   creationTime,
+		UpdatedAt:   creationTime,
 	}
 
 	if err := ValidateTask(t); err != nil {

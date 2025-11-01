@@ -7,6 +7,7 @@ import (
 	"os"
 	"sort"
 	"strings"
+	"time"
 	"tracker/task"
 )
 
@@ -71,8 +72,19 @@ func (j *JSONStore) AddTask(description string) (int, error) {
 }
 
 func (j *JSONStore) UpdateTask(id int, description string) error {
-	//TODO implement me
-	panic("implement me")
+	if len(description) < 1 || len(description) > 50 {
+		return fmt.Errorf("store: description length must be between 1 and 50")
+	}
+	for i, t := range j.tasks {
+		if t.ID == id {
+			j.tasks[i].Description = description
+			j.tasks[i].UpdatedAt = time.Now()
+
+			return j.saveTasks()
+		}
+	}
+
+	return fmt.Errorf("store: task with id [%d] not found", id)
 }
 
 func (j *JSONStore) DeleteTask(id int) (*task.Task, error) {
@@ -86,7 +98,7 @@ func (j *JSONStore) DeleteTask(id int) (*task.Task, error) {
 	}
 
 	if idx == -1 {
-		return nil, fmt.Errorf("store: task [%d] not found", id)
+		return nil, fmt.Errorf("store: task with id [%d] not found", id)
 	}
 
 	t := j.tasks[idx]

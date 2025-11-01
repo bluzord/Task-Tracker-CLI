@@ -116,7 +116,12 @@ func handleAdd(args []string, s store.Store) {
 		color.Red(err.Error())
 		return
 	}
-	fmt.Printf("%s %s %s\n", color.GreenString("Task added:"), color.HiMagentaString("[%d]", id), description)
+	fmt.Printf(
+		"%s %s %s\n",
+		color.GreenString("Task added:"),
+		color.HiMagentaString("[%d]", id),
+		description,
+	)
 }
 
 func handleUpdate(args []string, s store.Store) {
@@ -133,7 +138,18 @@ func handleUpdate(args []string, s store.Store) {
 
 	description := strings.Join(args[2:], " ")
 
-	fmt.Printf("Update %d description: %s\n", id, description)
+	err = s.UpdateTask(id, description)
+	if err != nil {
+		color.Red(err.Error())
+		return
+	}
+
+	fmt.Printf(
+		"%s %s %s\n",
+		color.GreenString("Task updated:"),
+		color.HiMagentaString("[%d]", id),
+		description,
+	)
 }
 
 func handleDelete(args []string, s store.Store) {
