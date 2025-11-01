@@ -31,7 +31,7 @@ go build . # Для Windows
 go build -o task-cli . # Для Linux
 ```
 
-4. (опционально для Unix) Добавьте файл в PATH:
+4. (опционально для Linux) Добавьте файл в PATH:
 ```bash
 mv task-cli /usr/local/bin/
 ```
