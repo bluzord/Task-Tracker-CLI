@@ -38,6 +38,16 @@ func printTasks(tasks []task.Task) {
 		return
 	}
 
+	maxIDWidth := 0
+	for _, t := range tasks {
+		width := len(color.HiMagentaString("[%d]", t.ID))
+		if width > maxIDWidth {
+			maxIDWidth = width
+		}
+	}
+
+	format := fmt.Sprintf("%%-%ds %%-%ds %%-%ds %%s %%s\n", maxIDWidth, 25, 50)
+
 	for _, t := range tasks {
 
 		var statusString, labelString, dateString string
@@ -60,7 +70,7 @@ func printTasks(tasks []task.Task) {
 		}
 
 		fmt.Printf(
-			"%-17s %-25s %-50s %s %s\n",
+			format,
 			color.HiMagentaString("[%d]", t.ID),
 			statusString,
 			t.Description,

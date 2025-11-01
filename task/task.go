@@ -24,7 +24,7 @@ func (s Status) IsValid() bool {
 }
 
 type Task struct {
-	ID          int       `json:"id" validate:"required,min=1,max=999999"`
+	ID          int       `json:"id" validate:"required,min=1"`
 	Description string    `json:"description" validate:"required,min=1,max=50"`
 	Status      Status    `json:"status" validate:"required"`
 	CreatedAt   time.Time `json:"created_at" validate:"required"`
