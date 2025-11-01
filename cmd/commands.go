@@ -189,6 +189,10 @@ func handleList(args []string, s store.Store) {
 		case task.StatusInProgress:
 			printTasks(s.ListTasksByStatus(task.StatusInProgress))
 		case task.StatusTodo:
+			temp := s.ListTasksByStatus(task.StatusTodo)
+			for _, t := range temp {
+				fmt.Println(t)
+			}
 			printTasks(s.ListTasksByStatus(task.StatusTodo))
 		default:
 			printUsage()
@@ -210,7 +214,18 @@ func handleMarkInProgress(args []string, s store.Store) {
 		return
 	}
 
-	fmt.Println("Mark In Progress task", id)
+	err = s.ChangeStatus(id, task.StatusInProgress)
+	if err != nil {
+		color.Red(err.Error())
+		return
+	}
+
+	fmt.Printf(
+		"%s %s %s\n",
+		color.GreenString("Task marked:"),
+		color.HiMagentaString("[%d]", id),
+		color.CyanString("(in-progress)"),
+	)
 }
 
 func handleMarkDone(args []string, s store.Store) {
@@ -225,5 +240,16 @@ func handleMarkDone(args []string, s store.Store) {
 		return
 	}
 
-	fmt.Println("Mark Done task", id)
+	err = s.ChangeStatus(id, task.StatusDone)
+	if err != nil {
+		color.Red(err.Error())
+		return
+	}
+
+	fmt.Printf(
+		"%s %s %s\n",
+		color.GreenString("Task marked:"),
+		color.HiMagentaString("[%d]", id),
+		color.GreenString("(done)"),
+	)
 }

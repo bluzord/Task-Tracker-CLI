@@ -24,6 +24,10 @@ type Store interface {
 	// Returns an error if the task does not exist.
 	DeleteTask(id int) (*task.Task, error)
 
+	// ChangeStatus updates a status of task by its ID.
+	// Returns an error if the task does not exist.
+	ChangeStatus(id int, status task.Status) error
+
 	// LastID returns the highest task ID in the storage.
 	// Used to generate new unique IDs.
 	LastID() int
@@ -75,8 +79,8 @@ func (j *JSONStore) UpdateTask(id int, description string) error {
 	if len(description) < 1 || len(description) > 50 {
 		return fmt.Errorf("store: description length must be between 1 and 50")
 	}
-	for i, t := range j.tasks {
-		if t.ID == id {
+	for i := range j.tasks {
+		if j.tasks[i].ID == id {
 			j.tasks[i].Description = description
 			j.tasks[i].UpdatedAt = time.Now()
 
@@ -109,6 +113,36 @@ func (j *JSONStore) DeleteTask(id int) (*task.Task, error) {
 		return nil, err
 	}
 	return &t, nil
+}
+
+func (j *JSONStore) ChangeStatus(id int, status task.Status) error {
+	for i := range j.tasks {
+		if j.tasks[i].ID == id {
+
+			if j.tasks[i].Status == status {
+				return fmt.Errorf("store: task with id [%d] already has status (%s)", id, status)
+			}
+
+			if status == task.StatusTodo {
+				return fmt.Errorf("store: cannot move task back to (todo) once it has been started")
+			}
+
+			if status == task.StatusDone {
+				j.tasks[i].Status = status
+			}
+
+			if status == task.StatusInProgress {
+				if j.tasks[i].Status == task.StatusDone {
+					return fmt.Errorf("store: cannot move task back to (in-progress) once it has been done")
+				}
+				j.tasks[i].Status = status
+			}
+
+			j.tasks[i].UpdatedAt = time.Now()
+			return j.saveTasks()
+		}
+	}
+	return fmt.Errorf("store: task with id [%d] not found", id)
 }
 
 func (j *JSONStore) LastID() int {
